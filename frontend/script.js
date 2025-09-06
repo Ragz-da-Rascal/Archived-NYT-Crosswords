@@ -118,7 +118,7 @@ function renderCrossword(data) {
 function renderClues(data) {
 	cluesContainer.innerHTML = '';
 	const acrossCluesDiv = document.createElement('div');
-	acrossCluesDiv.classList.add('clues');
+	acrossCluesDiv.classList.add('clues', 'across');
 	acrossCluesDiv.innerHTML = `<h2>Across</h2>`;
 	const acrossList = document.createElement('ul');
 	data.clues.across.forEach(c => {
@@ -129,7 +129,7 @@ function renderClues(data) {
 	acrossCluesDiv.appendChild(acrossList);
 
 	const downCluesDiv = document.createElement('div');
-	downCluesDiv.classList.add('clues');
+	downCluesDiv.classList.add('clues', 'down');
 	downCluesDiv.innerHTML = `<h2>Down</h2>`;
 	const downList = document.createElement('ul');
 	data.clues.down.forEach(c => {
@@ -175,7 +175,6 @@ function highlightWord() {
 
 	// clear
 	document.querySelectorAll('.highlight').forEach(el => el.classList.remove('highlight'));
-	document.querySelectorAll('.active').forEach(el => el.classList.remove('active'));
 
 	if (grid[currentRow * size.cols + currentCol] === '.') return;
 

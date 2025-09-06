@@ -39,7 +39,7 @@ app.get('/api/crosswords/:year/random', (req, res) => {
         res.json({ year, month, day: dayFile.replace('.json', ''), puzzle });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Failed to fetch random puzzle' });
+        res.status(500).json({ error: err});
     }
 });
 

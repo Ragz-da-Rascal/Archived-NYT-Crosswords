@@ -46,8 +46,10 @@
 }
 
 body {
+    display: flex;
+    align-items: center;
     margin: 0;
-    background: no-repeat linear-gradient(135deg, var(--bg), var(--bg-dark));
+    background: no-repeat linear-gradient(135deg, var(--bg), var(--text));
     width: 100%;
     min-height: 100dvh;
 }
@@ -110,11 +112,6 @@ h6 {
     color: var(--text);
     line-height: 1.35;
     letter-spacing: 0px;
-}
-
-.highlight {
-    font-weight: 700;
-    color: var(--primary);
 }
 
 p,
@@ -297,18 +294,6 @@ option {
     position: relative;
 }
 
-/* active cell stronger outline */
-.crossword-cell.active {
-    outline: 2px solid var(--bg-light);
-    outline-offset: -2px;
-}
-
-.crossword-cell.highlight {
-    outline: 0.15rem solid var(--bg-dark);
-    outline-offset: -2px;
-}
-
-
 .crossword-cell input {
     width: 90%;
     height: 90%;
@@ -317,6 +302,16 @@ option {
     border: none;
     background-color: var(--text);
     color: var(--bg-light);
+}
+
+.crossword-cell.highlight {
+    outline: 0.15rem solid var(--bg-dark);
+    outline-offset: -2px;
+}
+
+.crossword-cell.highlight input{
+    background-color: var(--primary);
+    color: var(--bg-dark);
 }
 
 
@@ -364,9 +359,8 @@ option {
     gap: 1rem;
 }
 
-.clues h3 {
+.clues h2 {
     text-align: center;
-    border-bottom: 2px solid var(--border);
     padding-bottom: 0.5rem;
     width: 100%;
 }
@@ -377,10 +371,18 @@ option {
     margin: 0;
 }
 
+.clues li {
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-muted);
+    padding-bottom: 0.5rem;
+}
+
 .clues>div {
     display: flex;
     flex-flow: column nowrap;
     gap: 0.5rem;
+    align-items: stretch;
+    min-height: 200px;
 }
 
 .across,
