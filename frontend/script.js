@@ -195,7 +195,6 @@ function highlightWord() {
 // helpers: get clue index from gridnum
 function getAcrossClue(gridnum, data) {
 	// across clues are in order, so we map gridnums that start words
-	let acrossStarts = data.gridnums.filter(n => n > 0); // all clue numbers
 	let idx = Object.values(data.clues.across).findIndex(clue => clue.startsWith(gridnum + "."));
 	if (idx !== -1) {
 		return { number: gridnum, text: data.clues.across[idx] };
@@ -315,7 +314,7 @@ document.addEventListener('keydown', (e) => {
 	switch (e.key) {
 		case 'Backspace': {
 			const input = getInput(currentRow, currentCol);
-			if (input && input.value) {
+			if (input?.value) {
 				input.value = '';
 			} else {
 				movePrev();
