@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NY Times | Crosswords</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <nav>
+                <select id="year-select">
+                    <option value="">Select a year</option>
+                    <!-- Generate options for each year from 1976 to 2018 -->
+                    <script>
+                        for (let i = 1976; i <= 2018; i++) {
+                            document.write(`<option value="${i}">${i}</option>`);
+                        }
+                    </script>
+                </select>
+                <button id="generate-btn">Generate</button>
+                <button id="solve-btn">Solve</button>
+                <button id="donate-btn">Donate</button>
+                <button id="theme-toggle" onclick="toggleTheme()">☼</button>
+            </nav>
+            <h1>NY Times Crosswords</h1>
+            <p>A Time Capsule of Contemplation</p>
+        </header>
+
+        <div class="crossword">
+            <div id="active-clue" class="clue-bar"></div>
+            <div id="puzzle-container" class="puzzle">
+
+            </div>
+
+            <section class="helper">
+                <h2>Clues</h2>
+                <div class="clues" id="clues-container">
+                    <div class="across">
+                        <h3>Across</h3>
+                    </div>
+                    <div class="down">
+                        <h3>Down</h3>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+
+</html>
