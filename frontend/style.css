@@ -385,13 +385,41 @@ option {
     width: 50%;
 }
 
+#alert-box {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translate(-50%, -20px);
+    /* center horizontally, slide up */
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 500;
+    background: rgb(255, 255, 255);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#alert-box.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+    /* fade + drop in */
+}
+
+.hidden {
+    display: none;
+}
+
 /* Style the entire scrollbar */
 ::-webkit-scrollbar {
-    width: 10px;
+    width: 0.75rem;
 }
 
 /* Style the scrollbar track */
 ::-webkit-scrollbar-track {
+    border-radius: 10px;
     background: var(--bg-dark);
 }
 

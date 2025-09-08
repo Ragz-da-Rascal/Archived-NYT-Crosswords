@@ -26,7 +26,7 @@ generateBtn.addEventListener('click', generateCrossword);
 
 async function generateCrossword() {
 	const year = yearSelect.value;
-	if (!year) { alert('Select a year'); return; }
+	if (!year) { showAlert('Select a year', "info"); return; }
 
 	const button = document.getElementById("generate-btn");
 	button.textContent = "Loading...";
@@ -44,7 +44,7 @@ async function generateCrossword() {
 
 	} catch (err) {
 		console.error(err);
-		alert('Something went wrong fetching the puzzle');
+		showAlert('Something went wrong fetching the puzzle. Try again.', "danger");
 	}
 
 	button.textContent = "Generate";
@@ -63,6 +63,37 @@ function solvePuzzle() {
 			if (input) input.value = sol.toUpperCase();
 		}
 	}
+}
+
+function showAlert(message, type = "info") {
+	const alertBox = document.getElementById("alert-box");
+
+	alertBox.textContent = message;
+	alertBox.className = ""; // reset
+	alertBox.classList.add("show");
+
+	// apply color variations
+	switch (type) {
+		case "success":
+			alertBox.style.color = "var(--success)";
+			alertBox.style.border = "5px solid var(--success)";
+			break;
+		case "danger":
+			alertBox.style.color = "var(--danger)";
+			alertBox.style.border = "5px solid var(--danger)";
+			break;
+		case "warning":
+			alertBox.style.color = "var(--warning)";
+			alertBox.style.border = "5px solid var(--warning)";
+			break;
+		default:
+			alertBox.style.color = "var(--info)";
+			alertBox.style.border = "5px solid var(--info)";
+	}
+
+	setTimeout(() => {
+		alertBox.classList.remove("show");
+	}, 1500); 
 }
 
 
@@ -298,6 +329,13 @@ function findFirstPlayableCell(data) {
 // Global typing/navigation
 document.addEventListener('keydown', (e) => {
 	if (!crosswordData) return;
+	checkIfComplete();
+
+	if (e.key === 'Enter') {
+		e.preventDefault();
+		moveNext();
+		return;
+	}
 
 	const letter = e.key.length === 1 && /[a-zA-Z]/.test(e.key) ? e.key.toUpperCase() : null;
 	if (letter) {
@@ -348,8 +386,6 @@ document.addEventListener('keydown', (e) => {
 		default:
 			break;
 	}
-
-	checkIfComplete();
 });
 
 function moveToNeighbor(dx, dy) {
@@ -377,12 +413,12 @@ function checkSolution() {
 			const input = getInput(i, j);
 			const val = (input?.value || '').toUpperCase();
 			if (val !== sol.toUpperCase()) {
-				alert('Oof, not quite right. Keep trying!');
+				showAlert('Oof, not quite right. Keep trying!', 'danger');
 				return;
 			}
 		}
 	}
-	alert('Congratulations, you solved the crossword!');
+	showAlert('Congratulations, you solved the crossword!', "success");
 }
 
 function checkIfComplete() {
