@@ -348,6 +348,8 @@ document.addEventListener('keydown', (e) => {
 		default:
 			break;
 	}
+
+	checkIfComplete();
 });
 
 function moveToNeighbor(dx, dy) {
@@ -381,4 +383,21 @@ function checkSolution() {
 		}
 	}
 	alert('Congratulations, you solved the crossword!');
+}
+
+function checkIfComplete() {
+	const { grid, size } = crosswordData;
+
+	for (let i = 0; i < size.rows; i++) {
+		for (let j = 0; j < size.cols; j++) {
+			const sol = grid[i * size.cols + j];
+			if (sol === '.') continue;
+
+			const input = getInput(i, j);
+			if (!input?.value) return; // still empty, not complete
+		}
+	}
+
+	// If we reach here, all squares are filled → run full check
+	checkSolution();
 }

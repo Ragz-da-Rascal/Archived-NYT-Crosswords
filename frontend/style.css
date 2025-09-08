@@ -133,6 +133,10 @@ textarea {
 }
 
 header {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
     text-align: center;
     margin-bottom: 1rem;
 }
@@ -142,8 +146,9 @@ nav {
     flex-flow: row nowrap;
     justify-content: center;
     align-items: center;
+    width: 100%;
     gap: 1rem;
-    margin-bottom: 1rem;
+    margin: 1rem 2rem;
 }
 
 button {
@@ -201,20 +206,8 @@ select:focus {
     box-shadow: 0 0 0 3px var(--primary);
 }
 
-/* Style the dropdown arrow */
-.custom-select-wrapper::after {
-    content: '▼';
-    position: absolute;
-    top: 50%;
-    right: 12px;
-    transform: translateY(-50%);
-    pointer-events: none;
-    color: var(--text-muted);
-}
-
 /* Style the dropdown options */
 option {
-    scrollbar-width: 0;
     background-color: var(--bg-light);
     color: var(--text);
 }
@@ -355,7 +348,7 @@ option {
     justify-content: space-evenly;
     align-items: flex-start;
     margin-top: 1rem;
-    padding: 2rem;
+    padding: auto 2rem;
     gap: 1rem;
 }
 
@@ -369,6 +362,8 @@ option {
     list-style: none;
     padding: 0;
     margin: 0;
+    max-height: 20rem;
+    overflow-y: scroll;
 }
 
 .clues li {
@@ -388,4 +383,25 @@ option {
 .across,
 .down {
     width: 50%;
+}
+
+/* Style the entire scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Style the scrollbar track */
+::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+
+/* Style the scrollbar thumb */
+::-webkit-scrollbar-thumb {
+    background: var(--text-muted);
+    border-radius: 10px;
+}
+
+/* Style the scrollbar thumb on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text);
 }
