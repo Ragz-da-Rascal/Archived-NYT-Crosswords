@@ -428,6 +428,7 @@ option:hover {
 
 /* Style the entire scrollbar */
 ::-webkit-scrollbar {
+    background-color: var(--bg-dark);
     width: 0.75rem;
 }
 
