@@ -34,8 +34,6 @@
     --warning: oklch(0.5 0.1 100);
     --success: oklch(0.5 0.1 160);
     --info: oklch(0.5 0.1 260);
-    /* sizes */
-    --cell-size: 30px;
 }
 
 *,
@@ -139,14 +137,16 @@ header {
     align-items: center;
     text-align: center;
     margin-bottom: 1rem;
+    width: 100%;
 }
 
 nav {
     display: flex;
-    flex-flow: row nowrap;
+    flex-flow: row wrap;
     justify-content: center;
     align-items: center;
     width: 100%;
+    font-size: clamp(1rem, 2dvw, 1.5rem);
     gap: 1rem;
     margin: 1rem 2rem;
 }
@@ -208,8 +208,15 @@ select:focus {
 
 /* Style the dropdown options */
 option {
+    padding: 1rem;
+    text-align: center;
     background-color: var(--bg-light);
     color: var(--text);
+    cursor: pointer;
+}
+
+option:hover {
+    background-color: var(--bg);
 }
 
 /* Style the light theme specifically */
@@ -220,7 +227,7 @@ option {
 }
 
 .container {
-    width: clamp(20rem, 90%, 50rem);
+    width: clamp(20rem, 90dvw, 50rem);
     /* min 20rem (~320px), fluid up to 90%, max 50rem (~800px) */
     margin: 1rem auto;
     /* centers on larger screens */
@@ -249,36 +256,27 @@ option {
 }
 
 .puzzle {
-    display: flex;
-    justify-content: center;
-    flex-flow: row wrap;
-    text-align: center;
-
-    border: 1px solid var(--border);
+    display: inline-flex;
+    flex-direction: column;
+    border: 1px solid var(--text);
     background-color: var(--text);
     box-shadow: var(--shadow);
-
-    padding: 1rem;
     margin: 1rem auto;
-
-    min-width: 12.5rem;
-    /* ~200px */
-    min-height: 12.5rem;
-    /* ~200px */
     max-width: 100%;
-    /* let it scale fluidly */
-    width: fit-content;
-    /* fit puzzle grid, but respect max-width */
+    aspect-ratio: 1 / 1;
 }
 
 
 .crossword-row {
     display: flex;
+    flex: 1;
 }
 
 .crossword-cell {
-    width: 30px;
-    height: 30px;
+    flex: 1;
+    /* each cell expands equally */
+    aspect-ratio: 1 / 1;
+    /* force cells to stay square */
     border: 1px solid var(--border);
     background-color: var(--text-muted);
     display: flex;
@@ -290,7 +288,7 @@ option {
 .crossword-cell input {
     width: 90%;
     height: 90%;
-    font-size: calc(var(--cell-size) * 0.75);
+    font-size: clamp(0.8rem, 2.5vw, 1.5rem);
     text-align: center;
     border: none;
     background-color: var(--text);
@@ -302,7 +300,7 @@ option {
     outline-offset: -2px;
 }
 
-.crossword-cell.highlight input{
+.crossword-cell.highlight input {
     background-color: var(--primary);
     color: var(--bg-dark);
 }
@@ -314,12 +312,11 @@ option {
 
 .gridnum {
     position: absolute;
-    top: 0.15em;
-    left: 0.15em;
+    top: 2px;
+    left: 2px;
     color: var(--bg-light);
     font-weight: 800;
-    font-size: calc(30px * 0.3);
-    /* scales with cell */
+    font-size: clamp(0.4rem, 1.2vw, 0.8rem);
     line-height: 1;
     pointer-events: none;
 }
@@ -367,6 +364,8 @@ option {
 }
 
 .clues li {
+    text-indent: 1ch;
+    margin-right: 1rem;
     margin-bottom: 0.5rem;
     border-bottom: 1px solid var(--border-muted);
     padding-bottom: 0.5rem;
@@ -377,7 +376,7 @@ option {
     flex-flow: column nowrap;
     gap: 0.5rem;
     align-items: stretch;
-    min-height: 200px;
+    min-height: 3rem;
 }
 
 .across,
@@ -393,6 +392,7 @@ option {
     /* center horizontally, slide up */
     padding: 1rem 1.5rem;
     border-radius: 12px;
+    text-align: center;
     font-size: 1rem;
     font-weight: 500;
     background: rgb(255, 255, 255);

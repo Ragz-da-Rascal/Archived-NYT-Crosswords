@@ -125,6 +125,19 @@ function renderCrossword(data) {
 				input.setAttribute('inputmode', 'latin');
 				cellDiv.appendChild(input);
 
+				let longPressTimer;
+
+				cellDiv.addEventListener("touchstart", () => {
+					longPressTimer = setTimeout(() => {
+						toggleDirection();
+					}, 500); // half a second hold
+				});
+
+				cellDiv.addEventListener("touchend", () => {
+					clearTimeout(longPressTimer);
+				});
+
+
 				// click to set active
 				cellDiv.addEventListener('click', () => setActiveCell(i, j, currentDirection));
 
@@ -152,9 +165,9 @@ function renderClues(data) {
 	acrossCluesDiv.classList.add('clues', 'across');
 	acrossCluesDiv.innerHTML = `<h2>Across</h2>`;
 	const acrossList = document.createElement('ul');
-	data.clues.across.forEach(c => {
+	data.clues.across.forEach(clue => {
 		const li = document.createElement('li');
-		li.textContent = c;
+		li.textContent = clue;
 		acrossList.appendChild(li);
 	});
 	acrossCluesDiv.appendChild(acrossList);
