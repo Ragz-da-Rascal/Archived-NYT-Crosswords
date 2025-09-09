@@ -256,9 +256,12 @@ option:hover {
 }
 
 .puzzle {
-    display: inline-flex;
+    display: flex;
     flex-direction: column;
-    border: 1px solid var(--text);
+    justify-content: center;
+    align-items: center;
+    border: 1rem solid var(--text);
+    border-radius: 10px;
     background-color: var(--text);
     box-shadow: var(--shadow);
     margin: 1rem auto;
