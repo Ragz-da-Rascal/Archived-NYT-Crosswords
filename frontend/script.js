@@ -1,15 +1,26 @@
-function toggleTheme() {
-	const root = document.documentElement;
-	const theme = root.getAttribute("data-theme");
-	const torch = document.getElementById("theme-toggle");
+const installButton = document.getElementById('install-btn');
 
-	root.setAttribute(
-		"data-theme",
-		theme === "light" ? "dark" : "light"
-	);
 
-	torch.textContent = theme === "light" ? "☼" : "\u263E";
-}
+// handle the beforeinstallprompt event 
+window.addEventListener('beforeinstallprompt', e => {
+	// prevent the install dialog from appearing too early
+	e.preventDefault();
+
+	// store the event for later use
+	window.deferredPrompt = e;
+});
+
+// event listener for the install button click
+installButton.addEventListener('click', () => {
+		if (window.deferredPrompt) {
+			// call the prompt method on the deferredPrompt object to display the install dialog
+			window.deferredPrompt.prompt();
+		}
+		else {
+			// show a dialog with instructions for browsers that don't support beforeinstallprompt
+		}
+	}
+);
 
 const yearSelect = document.getElementById('year-select');
 const generateBtn = document.getElementById('generate-btn');
@@ -93,7 +104,7 @@ function showAlert(message, type = "info") {
 
 	setTimeout(() => {
 		alertBox.classList.remove("show");
-	}, 1500); 
+	}, 1500);
 }
 
 
@@ -185,6 +196,19 @@ function renderClues(data) {
 
 	cluesContainer.appendChild(acrossCluesDiv);
 	cluesContainer.appendChild(downCluesDiv);
+}
+
+function toggleTheme() {
+	const root = document.documentElement;
+	const theme = root.getAttribute("data-theme");
+	const torch = document.getElementById("theme-toggle");
+
+	root.setAttribute(
+		"data-theme",
+		theme === "light" ? "dark" : "light"
+	);
+
+	torch.textContent = theme === "light" ? "☼" : "\u263E";
 }
 
 // ===== navigation & highlighting =====

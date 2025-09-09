@@ -226,6 +226,18 @@ option:hover {
     border: 1px solid var(--border);
 }
 
+.install{
+    border: 2px solid var(--text);
+    border-radius: 50px;
+    background-color: var(--primary);
+    color: var(--bg-dark)
+}
+
+.install:hover{
+    border: 2px solid var(--text-muted);
+    background-color: var(--secondary);
+}
+
 .container {
     width: clamp(20rem, 90dvw, 50rem);
     /* min 20rem (~320px), fluid up to 90%, max 50rem (~800px) */
@@ -367,7 +379,6 @@ option:hover {
 }
 
 .clues li {
-    text-indent: 1ch;
     margin-right: 1rem;
     margin-bottom: 0.5rem;
     border-bottom: 1px solid var(--border-muted);
