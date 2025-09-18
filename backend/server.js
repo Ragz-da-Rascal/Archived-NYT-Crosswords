@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3001;
 
 // Enable CORS
 app.use(cors({
-    origin: ["http://127.0.0.1:5500", "https://yourusername.github.io"]
+    origin: ["http://127.0.0.1:5500", "https://a-nyt-c.onrender.com"]
 }));
 
 // GET /api/crosswords/:year/random
