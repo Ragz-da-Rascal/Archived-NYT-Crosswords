@@ -43,7 +43,7 @@ async function generateCrossword() {
 	button.textContent = "Loading...";
 
 	try {
-		const res = await fetch(`http://localhost:3001/api/crosswords/${year}/random`);
+		const res = await fetch(`https://a-nyt-c.onrender.comapi/crosswords/${year}/random`);
 		if (!res.ok) throw new Error('Failed to fetch random puzzle');
 
 		const { puzzle } = await res.json();
