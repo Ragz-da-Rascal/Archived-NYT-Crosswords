@@ -8,7 +8,9 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Enable CORS
-app.use(cors());
+app.use(cors({
+    origin: ["http://127.0.0.1:5500", "https://yourusername.github.io"]
+}));
 
 // GET /api/crosswords/:year/random
 // Returns one random valid day JSON for that year
