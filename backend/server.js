@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3001;
 
 // Enable CORS
 app.use(cors({
-    origin: ["http://127.0.0.1:5500", " http://ragz-da-rascal.github.io/Archived-NYT-Crosswords/"]
+    origin: ["http://127.0.0.1:5500", "http://ragz-da-rascal.github.io/Archived-NYT-Crosswords/"]
 }));
 
 // GET /api/crosswords/:year/random
@@ -75,4 +75,4 @@ app.get('/api/crosswords/:year/random', (req, res) => {
 
 
 
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Server running on ${PORT}`));
