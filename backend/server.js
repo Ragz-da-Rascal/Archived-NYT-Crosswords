@@ -5,11 +5,25 @@ const path = require("path");
 const cors = require("cors");
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 10000;
 
 // Enable CORS
+const allowedOrigins = [
+    "http://127.0.0.1:5500",                // local dev
+    "https://ragz-da-rascal.github.io",     // GitHub Pages root
+];
+
 app.use(cors({
-    origin: ["http://127.0.0.1:5500", "http://ragz-da-rascal.github.io/Archived-NYT-Crosswords/"]
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin) || origin.endsWith(".onrender.com")) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS: " + origin));
+        }
+    },
+    credentials: true, // Allow cookies to be sent with requests
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    optionsSuccessStatus: 200
 }));
 
 // GET /api/crosswords/:year/random
