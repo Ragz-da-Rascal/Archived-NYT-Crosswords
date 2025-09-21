@@ -88,4 +88,4 @@ app.get('/api/crosswords/:year/random', (req, res) => {
 
 
 
-app.listen(10000, () => console.log(`Server running on ${PORT}`));
+app.listen(10000, () => console.log(`Server running on 10000`));
