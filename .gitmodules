@@ -1,2 +1,5 @@
 [submodule "backend/nyt_crosswords"]
-	url = https://github.com/doshea/nyt_crosswords.git
+    path = backend/nyt_crosswords
+    url = https://github.com/doshea/nyt_crosswords.git
+    branch = main
+
