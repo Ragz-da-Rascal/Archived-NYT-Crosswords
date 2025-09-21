@@ -12,14 +12,14 @@ window.addEventListener('beforeinstallprompt', e => {
 
 // event listener for the install button click
 installButton.addEventListener('click', () => {
-		if (window.deferredPrompt) {
-			// call the prompt method on the deferredPrompt object to display the install dialog
-			window.deferredPrompt.prompt();
-		}
-		else {
-			// show a dialog with instructions for browsers that don't support beforeinstallprompt
-		}
+	if (window.deferredPrompt) {
+		// call the prompt method on the deferredPrompt object to display the install dialog
+		window.deferredPrompt.prompt();
 	}
+	else {
+		// show a dialog with instructions for browsers that don't support beforeinstallprompt
+	}
+}
 );
 
 if ('serviceWorker' in navigator) {
@@ -45,91 +45,78 @@ let crosswordData = null;
 generateBtn.addEventListener('click', generateCrossword);
 solveBtn.addEventListener('click', solvePuzzle);
 
-// Global typing/navigation
-document.addEventListener('keydown', (e) => {
-	if (!crosswordData) return;
-	checkIfComplete();
-
-	if (e.key === 'Enter') {
-		e.preventDefault();
-		moveNext();
-		return;
-	}
-
-	const letter = e.key.length === 1 && /[a-zA-Z]/.test(e.key) ? e.key.toUpperCase() : null;
-	if (letter) {
-		const input = getInput(currentRow, currentCol);
-		if (input) {
-			input.value = letter;
-			moveNext();
-			e.preventDefault();
-		}
-		return;
-	}
-
-	switch (e.key) {
-		case 'Backspace': {
-			const input = getInput(currentRow, currentCol);
-			if (input?.value) {
-				input.value = '';
-			} else {
-				movePrev();
-				const prev = getInput(currentRow, currentCol);
-				if (prev) prev.value = '';
-			}
-			e.preventDefault();
-			break;
-		}
-		case 'ArrowLeft':
-			moveToNeighbor(-1, 0);
-			e.preventDefault();
-			break;
-		case 'ArrowRight':
-			moveToNeighbor(1, 0);
-			e.preventDefault();
-			break;
-		case 'ArrowUp':
-			moveToNeighbor(0, -1);
-			e.preventDefault();
-			break;
-		case 'ArrowDown':
-			moveToNeighbor(0, 1);
-			e.preventDefault();
-			break;
-		case ' ':
-		case 'Enter':
-		case 'Tab':
-			toggleDirection();
-			e.preventDefault();
-			break;
-		default:
-			break;
-	}
-});
-
+// ===== Input Handling =====
 function addInputListeners(input, row, col) {
-	input.addEventListener('input', (e) => {
-		const val = input.value.toUpperCase().slice(-1); // take last char typed
-		input.value = val; // enforce single uppercase letter
-		moveNextCell(row, col);
+	// Letter entry auto-advance
+	input.addEventListener('input', () => {
+		const val = input.value.toUpperCase().slice(-1); // keep last char
+		input.value = val;
+
+		if (val) moveNextCell(row, col);
 		checkIfComplete();
 	});
 
+	// Navigation keys
 	input.addEventListener('keydown', (e) => {
 		switch (e.key) {
-			case 'Backspace':
+			case 'Backspace': {
 				e.preventDefault();
-				input.value = '';
-				movePrevCell(row, col);
+				if (input.value) {
+					input.value = '';
+				} else {
+					movePrevCell(row, col);
+				}
 				break;
+			}
 			case 'Enter':
 				e.preventDefault();
 				moveNextCell(row, col);
+				break;
+			case 'ArrowLeft':
+				e.preventDefault();
+				moveToNeighbor(-1, 0);
+				break;
+			case 'ArrowRight':
+				e.preventDefault();
+				moveToNeighbor(1, 0);
+				break;
+			case 'ArrowUp':
+				e.preventDefault();
+				moveToNeighbor(0, -1);
+				break;
+			case 'ArrowDown':
+				e.preventDefault();
+				moveToNeighbor(0, 1);
 				break;
 		}
 	});
 }
 
+// ===== Cell Navigation Helpers =====
+function moveNextCell(row, col) {
+	setActiveCell(row, col, currentDirection);
+	if (currentDirection === 'across') {
+		let c = col + 1;
+		while (c < crosswordData.size.cols && crosswordData.grid[row * crosswordData.size.cols + c] === '.') c++;
+		if (c < crosswordData.size.cols) setActiveCell(row, c, currentDirection);
+	} else {
+		let r = row + 1;
+		while (r < crosswordData.size.rows && crosswordData.grid[r * crosswordData.size.cols + col] === '.') r++;
+		if (r < crosswordData.size.rows) setActiveCell(r, col, currentDirection);
+	}
+}
+
+function movePrevCell(row, col) {
+	if (currentDirection === 'across') {
+		let c = col - 1;
+		while (c >= 0 && crosswordData.grid[row * crosswordData.size.cols + c] === '.') c--;
+		if (c >= 0) setActiveCell(row, c, currentDirection);
+	} else {
+		let r = row - 1;
+		while (r >= 0 && crosswordData.grid[r * crosswordData.size.cols + col] === '.') r--;
+		if (r >= 0) setActiveCell(r, col, currentDirection);
+	}
+}
 
 async function generateCrossword() {
 	const year = yearSelect.value;
@@ -156,6 +143,7 @@ async function generateCrossword() {
 
 	button.textContent = "Generate";
 }
+
 
 function solvePuzzle() {
 	const { grid, size } = crosswordData;
@@ -204,8 +192,8 @@ function showAlert(message, type = "info") {
 function renderCrossword(data) {
 	crosswordData = data;
 	const puzzle = document.querySelector('.puzzle');
-	puzzle.style.height = '100%';
-	
+	puzzle.style.height = '100%'; // keep puzzle filling parent
+
 	crosswordContainer.innerHTML = '';
 	const { grid, gridnums, size } = data;
 
@@ -217,7 +205,6 @@ function renderCrossword(data) {
 		for (let j = 0; j < size.cols; j++) {
 			const cellDiv = document.createElement('div');
 			cellDiv.classList.add('crossword-cell');
-			// tag coordinates for quick lookup
 			cellDiv.dataset.row = i;
 			cellDiv.dataset.col = j;
 			rowDiv.appendChild(cellDiv);
@@ -228,38 +215,35 @@ function renderCrossword(data) {
 			if (cellValue !== '.') {
 				const input = document.createElement('input');
 				let longPressTimer;
-				
+
 				input.type = 'text';
 				input.maxLength = 1;
 				input.setAttribute('inputmode', 'latin');
 				cellDiv.appendChild(input);
 				addInputListeners(input, i, j);
 
+				// mobile long press toggles direction
 				cellDiv.addEventListener("touchstart", () => {
 					longPressTimer = setTimeout(() => {
 						toggleDirection();
-					}, 500); // half a second hold
+					}, 500);
 				});
 
 				cellDiv.addEventListener("touchend", () => {
 					clearTimeout(longPressTimer);
 				});
 
-
-				// click to set active
+				// click to set active cell
 				cellDiv.addEventListener('click', () => setActiveCell(i, j, currentDirection));
 
 				// double-click to toggle direction
-				cellDiv.addEventListener('dblclick', () => {
-					toggleDirection();
-				});
+				cellDiv.addEventListener('dblclick', () => toggleDirection());
 			} else {
 				cellDiv.classList.add('black-cell');
 			}
 
 			if (gridnum !== 0) {
 				const numSpan = document.createElement('span');
-				
 				numSpan.classList.add('gridnum');
 				numSpan.textContent = gridnum;
 				cellDiv.appendChild(numSpan);
@@ -268,19 +252,20 @@ function renderCrossword(data) {
 	}
 }
 
+
 function renderClues(data) {
 	cluesContainer.innerHTML = '';
 	const acrossCluesDiv = document.createElement('div');
 	acrossCluesDiv.classList.add('clues', 'across');
 	acrossCluesDiv.innerHTML = `<h2>Across</h2>`;
 	const acrossList = document.createElement('ul');
-	
+
 	data.clues.across.forEach(clue => {
 		const li = document.createElement('li');
 		li.textContent = clue;
 		acrossList.appendChild(li);
 	});
-	
+
 	acrossCluesDiv.appendChild(acrossList);
 
 	const downCluesDiv = document.createElement('div');
@@ -423,30 +408,6 @@ function setActiveCell(row, col, direction) {
 	}
 }
 
-function moveNext() {
-	const { grid, size } = crosswordData;
-	if (currentDirection === 'across') {
-		let c = currentCol + 1;
-		while (c < size.cols && grid[currentRow * size.cols + c] === '.') c++;
-		if (c < size.cols) setActiveCell(currentRow, c, currentDirection);
-	} else {
-		let r = currentRow + 1;
-		while (r < size.rows && grid[r * size.cols + currentCol] === '.') r++;
-		if (r < size.rows) setActiveCell(r, currentCol, currentDirection);
-	}
-}
-function movePrev() {
-	const { grid, size } = crosswordData;
-	if (currentDirection === 'across') {
-		let c = currentCol - 1;
-		while (c >= 0 && grid[currentRow * size.cols + c] === '.') c--;
-		if (c >= 0) setActiveCell(currentRow, c, currentDirection);
-	} else {
-		let r = currentRow - 1;
-		while (r >= 0 && grid[r * size.cols + currentCol] === '.') r--;
-		if (r >= 0) setActiveCell(r, currentCol, currentDirection);
-	}
-}
 function toggleDirection() {
 	currentDirection = currentDirection === 'across' ? 'down' : 'across';
 	updateClueDisplay(currentRow, currentCol, currentDirection, crosswordData);
@@ -464,10 +425,10 @@ function findFirstPlayableCell(data) {
 }
 
 function moveToNeighbor(dx, dy) {
-	// dx = +/-1 (cols), dy = +/-1 (rows)
 	const { grid, size } = crosswordData;
 	let r = currentRow + dy;
 	let c = currentCol + dx;
+
 	while (r >= 0 && r < size.rows && c >= 0 && c < size.cols) {
 		if (grid[r * size.cols + c] !== '.') {
 			setActiveCell(r, c, currentDirection);
