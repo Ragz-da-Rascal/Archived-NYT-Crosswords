@@ -43,7 +43,7 @@ async function generateCrossword() {
 	button.textContent = "Loading...";
 
 	try {
-		const res = await fetch(`https://a-nyt-c.onrender.com/api/crosswords/${year}/random`);
+		const res = await fetch(`http://localhost:10000/api/crosswords/${year}/random`);
 		if (!res.ok) throw new Error('Failed to fetch random puzzle');
 
 		const { puzzle } = await res.json();
@@ -110,6 +110,9 @@ function showAlert(message, type = "info") {
 
 function renderCrossword(data) {
 	crosswordData = data;
+	const puzzle = document.querySelector('.puzzle');
+	puzzle.style.height = '100%';
+	
 	crosswordContainer.innerHTML = '';
 	const { grid, gridnums, size } = data;
 

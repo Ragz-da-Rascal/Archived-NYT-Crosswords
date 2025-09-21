@@ -230,19 +230,19 @@ option:hover {
     border: 2px solid var(--text);
     border-radius: 50px;
     background-color: var(--primary);
-    color: var(--bg-dark)
+    color: var(--bg-dark);
+    transition: all 0.125s ease-in-out;
 }
 
 .install:hover{
-    border: 2px solid var(--text-muted);
+    border-color: var(--primary);
     background-color: var(--secondary);
 }
 
 .container {
     width: clamp(20rem, 90dvw, 50rem);
-    /* min 20rem (~320px), fluid up to 90%, max 50rem (~800px) */
+    min-height: fit-content;
     margin: 1rem auto;
-    /* centers on larger screens */
     padding: 1rem;
     background-color: var(--bg-dark);
     border: 1px solid var(--border-muted);
@@ -277,6 +277,7 @@ option:hover {
     background-color: var(--text);
     box-shadow: var(--shadow);
     margin: 1rem auto;
+    height: 40dvh;
     max-width: 100%;
     aspect-ratio: 1 / 1;
 }
@@ -340,8 +341,9 @@ option:hover {
 
 
 .helper {
+    align-self: center;
     padding: 1rem;
-    margin-top: 1rem;
+    margin: 1rem;
     background-color: var(--bg-light);
     border: 2px solid var(--border);
     border-radius: 0.5rem;
