@@ -9,12 +9,12 @@ const app = express();
 // Enable CORS
 const allowedOrigins = [
     "http://127.0.0.1:5500",                // local dev
-    "https://ragz-da-rascal.github.io",     // GitHub Pages root
+    "https://ragz-da-rascal.github.io"     // GitHub Pages root
 ];
 
 app.use(cors({
     origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin) || origin.endsWith(".onrender.com")) {
+        if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
             callback(new Error("Not allowed by CORS: " + origin));
@@ -88,4 +88,4 @@ app.get('/api/crosswords/:year/random', (req, res) => {
 
 
 
-app.listen(10000, () => console.log(`Server running on 10000`));
+app.listen(process.env.PORT, () => console.log(`Server running on ${process.env.PORT}`));

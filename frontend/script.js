@@ -24,6 +24,7 @@ installButton.addEventListener('click', () => {
 
 const yearSelect = document.getElementById('year-select');
 const generateBtn = document.getElementById('generate-btn');
+const solveBtn = document.getElementById('solve-btn');
 const crosswordContainer = document.getElementById('puzzle-container');
 const cluesContainer = document.getElementById('clues-container');
 const clueBar = document.getElementById('active-clue');
@@ -34,6 +35,69 @@ let currentDirection = 'across';
 let crosswordData = null;
 
 generateBtn.addEventListener('click', generateCrossword);
+solveBtn.addEventListener('click', solvePuzzle);
+
+// Global typing/navigation
+document.addEventListener('keydown', (e) => {
+	if (!crosswordData) return;
+	checkIfComplete();
+
+	if (e.key === 'Enter') {
+		e.preventDefault();
+		moveNext();
+		return;
+	}
+
+	const letter = e.key.length === 1 && /[a-zA-Z]/.test(e.key) ? e.key.toUpperCase() : null;
+	if (letter) {
+		const input = getInput(currentRow, currentCol);
+		if (input) {
+			input.value = letter;
+			moveNext();
+			e.preventDefault();
+		}
+		return;
+	}
+
+	switch (e.key) {
+		case 'Backspace': {
+			const input = getInput(currentRow, currentCol);
+			if (input?.value) {
+				input.value = '';
+			} else {
+				movePrev();
+				const prev = getInput(currentRow, currentCol);
+				if (prev) prev.value = '';
+			}
+			e.preventDefault();
+			break;
+		}
+		case 'ArrowLeft':
+			moveToNeighbor(-1, 0);
+			e.preventDefault();
+			break;
+		case 'ArrowRight':
+			moveToNeighbor(1, 0);
+			e.preventDefault();
+			break;
+		case 'ArrowUp':
+			moveToNeighbor(0, -1);
+			e.preventDefault();
+			break;
+		case 'ArrowDown':
+			moveToNeighbor(0, 1);
+			e.preventDefault();
+			break;
+		case ' ':
+		case 'Enter':
+		case 'Tab':
+			toggleDirection();
+			e.preventDefault();
+			break;
+		default:
+			break;
+	}
+});
 
 async function generateCrossword() {
 	const year = yearSelect.value;
@@ -60,9 +124,6 @@ async function generateCrossword() {
 
 	button.textContent = "Generate";
 }
-
-
-document.getElementById('solve-btn').addEventListener('click', solvePuzzle);
 
 function solvePuzzle() {
 	const { grid, size } = crosswordData;
@@ -365,68 +426,6 @@ function findFirstPlayableCell(data) {
 	}
 	return null;
 }
-
-// Global typing/navigation
-document.addEventListener('keydown', (e) => {
-	if (!crosswordData) return;
-	checkIfComplete();
-
-	if (e.key === 'Enter') {
-		e.preventDefault();
-		moveNext();
-		return;
-	}
-
-	const letter = e.key.length === 1 && /[a-zA-Z]/.test(e.key) ? e.key.toUpperCase() : null;
-	if (letter) {
-		const input = getInput(currentRow, currentCol);
-		if (input) {
-			input.value = letter;
-			moveNext();
-			e.preventDefault();
-		}
-		return;
-	}
-
-	switch (e.key) {
-		case 'Backspace': {
-			const input = getInput(currentRow, currentCol);
-			if (input?.value) {
-				input.value = '';
-			} else {
-				movePrev();
-				const prev = getInput(currentRow, currentCol);
-				if (prev) prev.value = '';
-			}
-			e.preventDefault();
-			break;
-		}
-		case 'ArrowLeft':
-			moveToNeighbor(-1, 0);
-			e.preventDefault();
-			break;
-		case 'ArrowRight':
-			moveToNeighbor(1, 0);
-			e.preventDefault();
-			break;
-		case 'ArrowUp':
-			moveToNeighbor(0, -1);
-			e.preventDefault();
-			break;
-		case 'ArrowDown':
-			moveToNeighbor(0, 1);
-			e.preventDefault();
-			break;
-		case ' ':
-		case 'Enter':
-		case 'Tab':
-			toggleDirection();
-			e.preventDefault();
-			break;
-		default:
-			break;
-	}
-});
 
 function moveToNeighbor(dx, dy) {
 	// dx = +/-1 (cols), dy = +/-1 (rows)
