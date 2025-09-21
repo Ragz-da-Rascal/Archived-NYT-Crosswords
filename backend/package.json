@@ -5,10 +5,13 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "build": "react-scripts build"
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "react-scripts": "^5.0.1"
   }
 }
