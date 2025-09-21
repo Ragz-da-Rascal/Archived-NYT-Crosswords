@@ -107,6 +107,30 @@ document.addEventListener('keydown', (e) => {
 	}
 });
 
+function addInputListeners(input, row, col) {
+	input.addEventListener('input', (e) => {
+		const val = input.value.toUpperCase().slice(-1); // take last char typed
+		input.value = val; // enforce single uppercase letter
+		moveNextCell(row, col);
+		checkIfComplete();
+	});
+
+	input.addEventListener('keydown', (e) => {
+		switch (e.key) {
+			case 'Backspace':
+				e.preventDefault();
+				input.value = '';
+				movePrevCell(row, col);
+				break;
+			case 'Enter':
+				e.preventDefault();
+				moveNextCell(row, col);
+				break;
+		}
+	});
+}
+
+
 async function generateCrossword() {
 	const year = yearSelect.value;
 	if (!year) { showAlert('Select a year', "info"); return; }
@@ -203,12 +227,13 @@ function renderCrossword(data) {
 
 			if (cellValue !== '.') {
 				const input = document.createElement('input');
+				let longPressTimer;
+				
 				input.type = 'text';
 				input.maxLength = 1;
 				input.setAttribute('inputmode', 'latin');
 				cellDiv.appendChild(input);
-
-				let longPressTimer;
+				addInputListeners(input, i, j);
 
 				cellDiv.addEventListener("touchstart", () => {
 					longPressTimer = setTimeout(() => {
@@ -234,6 +259,7 @@ function renderCrossword(data) {
 
 			if (gridnum !== 0) {
 				const numSpan = document.createElement('span');
+				
 				numSpan.classList.add('gridnum');
 				numSpan.textContent = gridnum;
 				cellDiv.appendChild(numSpan);
@@ -248,11 +274,13 @@ function renderClues(data) {
 	acrossCluesDiv.classList.add('clues', 'across');
 	acrossCluesDiv.innerHTML = `<h2>Across</h2>`;
 	const acrossList = document.createElement('ul');
+	
 	data.clues.across.forEach(clue => {
 		const li = document.createElement('li');
 		li.textContent = clue;
 		acrossList.appendChild(li);
 	});
+	
 	acrossCluesDiv.appendChild(acrossList);
 
 	const downCluesDiv = document.createElement('div');
