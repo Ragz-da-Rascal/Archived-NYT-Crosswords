@@ -5,7 +5,6 @@ const path = require("path");
 const cors = require("cors");
 
 const app = express();
-const PORT = process.env.PORT || 10000;
 
 // Enable CORS
 const allowedOrigins = [
@@ -89,4 +88,4 @@ app.get('/api/crosswords/:year/random', (req, res) => {
 
 
 
-app.listen(PORT, () => console.log(`Server running on ${PORT}`));
+app.listen(process.env.PORT, () => console.log(`Server running on ${PORT}`));
