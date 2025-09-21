@@ -1,3 +1,2 @@
 [submodule "backend/nyt_crosswords"]
-	path = backend/nyt_crosswords
-	url = https://github.com/Ragz-da-Rascal/Archived-NYT-Crosswords.git
+	url = https://github.com/doshea/nyt_crosswords.git
