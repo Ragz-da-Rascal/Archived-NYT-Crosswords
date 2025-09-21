@@ -3,7 +3,8 @@
     "short_name": "NYT Crosswords",
     "description": "An archive of Crossword from the New York Times",
     "id": "pwa-today",
-    "start_url": "/?source=pwa",
+    "start_url": "./?source=pwa",
+    "scope": "./",
     "display": "standalone",
     "icons": [
         {
@@ -23,13 +24,13 @@
         {
             "src": "public/images/480x822.png",
             "sizes": "400x822",
-            "type": "image/jpeg",
+            "type": "image/png",
             "form_factor": "narrow"
         },
         {
             "src": "public/images/1280x676.png",
             "sizes": "1280x676",
-            "type": "image/jpeg",
+            "type": "image/png",
             "form_factor": "wide"
         }
     ]
