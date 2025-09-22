@@ -557,6 +557,21 @@ option:hover {
     transition: all 0.2s ease-in-out;
 }
 
+#accept-disclaimer {
+    margin-top: 1rem;
+    background-color: var(--primary);
+    color: var(--bg-dark);
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#accept-disclaimer:hover {
+    background-color: var(--secondary);
+}
+
 /* Style the entire scrollbar */
 ::-webkit-scrollbar {
     background-color: var(--bg-dark);
