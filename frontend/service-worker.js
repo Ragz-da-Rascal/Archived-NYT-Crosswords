@@ -1,17 +1,22 @@
 // service-worker.js
-const CACHE_NAME = "nyt-crosswords-cache-v1";
+const CACHE_NAME = "nyt-crosswords-cache-v2";
 const ASSETS = [
     "./",
     "./index.html",
     "./style.css",
     "./script.js",
+    "./manifest.json",
     "./images/Logo.png"
 ];
 
 // Install: cache assets
 self.addEventListener("install", event => {
     event.waitUntil(
-        caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
+        caches.open(CACHE_NAME).then(cache =>
+            Promise.allSettled(
+                ASSETS.map(asset => cache.add(asset))
+            )
+        )
     );
 });
 

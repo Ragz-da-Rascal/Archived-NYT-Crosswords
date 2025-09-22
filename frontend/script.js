@@ -1,49 +1,22 @@
-const installButton = document.getElementById('install-btn');
-
-
-// handle the beforeinstallprompt event 
-window.addEventListener('beforeinstallprompt', e => {
-	// prevent the install dialog from appearing too early
-	e.preventDefault();
-
-	// store the event for later use
-	window.deferredPrompt = e;
-});
-
-// event listener for the install button click
-installButton.addEventListener('click', () => {
-	if (window.deferredPrompt) {
-		// call the prompt method on the deferredPrompt object to display the install dialog
-		window.deferredPrompt.prompt();
-	}
-	else {
-		// show a dialog with instructions for browsers that don't support beforeinstallprompt
-	}
-}
-);
-
-if ('serviceWorker' in navigator) {
-	window.addEventListener('load', () => {
-		navigator.serviceWorker.register('./service-worker.js')
-			.then(reg => console.log('SW registered:', reg))
-			.catch(err => console.error('SW failed:', err));
-	});
-}
-
 const yearSelect = document.getElementById('year-select');
 const generateBtn = document.getElementById('generate-btn');
 const solveBtn = document.getElementById('solve-btn');
 const crosswordContainer = document.getElementById('puzzle-container');
 const cluesContainer = document.getElementById('clues-container');
 const clueBar = document.getElementById('active-clue');
+const donateBtn = document.getElementById('donate-btn');
+const donateModal = document.getElementById('donate-modal');
+const closeModal = document.getElementById('close-modal');
+const confirmDonate = document.getElementById('confirm-donate');
+const donateOptions = document.querySelectorAll('.donate-option');
+const customAmount = document.getElementById('custom-amount');
+const installButton = document.getElementById('install-btn');
 
+let selectedAmount = null;
 let currentRow = 0;
 let currentCol = 0;
 let currentDirection = 'across';
 let crosswordData = null;
-
-generateBtn.addEventListener('click', generateCrossword);
-solveBtn.addEventListener('click', solvePuzzle);
 
 // ===== Input Handling =====
 function addInputListeners(input, row, col) {
@@ -341,7 +314,6 @@ function highlightWord() {
 
 	// emphasize active cell
 	const activeCell = getCell(currentRow, currentCol);
-	if (activeCell) activeCell.classList.add('active');
 }
 
 // helpers: get clue index from gridnum
@@ -473,3 +445,121 @@ function checkIfComplete() {
 	// If we reach here, all squares are filled → run full check
 	checkSolution();
 }
+
+donateBtn.addEventListener('click', () => {
+	donateModal.classList.remove('hidden');
+});
+
+closeModal.addEventListener('click', () => {
+	donateModal.classList.add('hidden');
+});
+
+const customInput = document.getElementById("custom-amount");
+
+donateOptions.forEach(btn => {
+	btn.addEventListener("click", () => {
+		const value = btn.dataset.amount;
+
+		// If this button is already selected → deselect & focus custom input
+		if (btn.classList.contains("selected")) {
+			btn.classList.remove("selected");
+			selectedAmount = null;
+			return;
+		}
+
+		// Otherwise: clear all selections, then select this one
+		document.querySelectorAll(".donate-option").forEach(btn => btn.classList.remove("selected"));
+		btn.classList.add("selected");
+
+		customInput.addEventListener("click", () => { 
+			btn.classList.remove("selected");
+			selectedAmount = null;
+		});
+
+		if (value) {
+			selectedAmount = parseFloat(value);
+			customInput.value = ""; // clear custom if preset chosen
+		} else {
+			selectedAmount = null;
+		}
+	});
+});
+
+
+confirmDonate.addEventListener("click", () => {
+	const value = +customInput.value || selectedAmount;
+	const regex = /^\d+(\.\d{1,2})?$/;
+
+	if (!value || !regex.test(value) || parseFloat(value) <= 0) {
+		showAlert("Please select or enter a valid donation amount.", "danger");
+		customInput.focus();
+		return;
+	}
+
+	// 🔗 Here you’d call Stripe or your backend to handle payment
+
+	fetch("https://a-nyt-c.onrender.com/api/donate", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({ value }),
+	})
+		.then(response => response.json())
+		.then(data => {
+			if (data.url) {
+				window.location.href = data.url;
+			} else {
+				showAlert("An error occurred while processing your donation.", "danger");
+			}
+		})
+		.catch(error => {
+			console.error("Error:", error);
+			showAlert("An error occurred while processing your donation.", "danger");
+		});
+});
+
+generateBtn.addEventListener('click', generateCrossword);
+solveBtn.addEventListener('click', solvePuzzle);
+
+// handle the beforeinstallprompt event 
+window.addEventListener('beforeinstallprompt', e => {
+	// prevent the install dialog from appearing too early
+	e.preventDefault();
+
+	// store the event for later use
+	window.deferredPrompt = e;
+});
+
+// event listener for the install button click
+installButton.addEventListener('click', () => {
+	if (window.deferredPrompt) {
+		// call the prompt method on the deferredPrompt object to display the install dialog
+		window.deferredPrompt.prompt();
+	}
+}
+);
+
+if ('serviceWorker' in navigator) {
+	window.addEventListener('load', () => {
+		navigator.serviceWorker.register('./service-worker.js')
+			.then(reg => console.log('SW registered:', reg))
+			.catch(err => console.error('SW failed:', err));
+	});
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+	const params = new URLSearchParams(window.location.search);
+	const status = params.get("status");
+
+	if (status === "success") {
+		showAlert("🎉 Thank you for your donation!", "success");
+	} else if (status === "cancel") {
+		showAlert("❌ Donation was canceled.", "warning");
+	}
+
+	// ✅ Clean the URL (so it doesn’t stay like ?status=success)
+	if (status) {
+		window.history.replaceState({}, document.title, window.location.pathname);
+	}
+});

@@ -3,8 +3,13 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const cors = require("cors");
+const Stripe = require("stripe");
 
 const app = express();
+app.use(express.json()); // needed for POST bodies
+
+// Stripe setup (use your Secret Key here)
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 // Enable CORS
 const allowedOrigins = [
@@ -20,72 +25,99 @@ app.use(cors({
             callback(new Error("Not allowed by CORS: " + origin));
         }
     },
-    credentials: true, // Allow cookies to be sent with requests
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+    methods: ['GET', 'POST'],
     optionsSuccessStatus: 200
 }));
 
-// GET /api/crosswords/:year/random
-// Returns one random valid day JSON for that year
+/* ------------------------------
+   Crossword Endpoint 
+-------------------------------- */
 app.get('/api/crosswords/:year/random', (req, res) => {
     try {
-        // Extract year from URL parameters
         const year = req.params.year;
-
-        // Construct path to the year's directory
         const yearPath = path.join(__dirname, 'nyt_crosswords', year);
 
-        // Check if year exists
         if (!fs.existsSync(yearPath)) {
             return res.status(404).json({ error: 'Year not found' });
         }
 
-        // Get all months in the year directory
-        const months = fs.readdirSync(yearPath).filter(function (f) {
-            return fs.statSync(path.join(yearPath, f)).isDirectory();
-        });
+        const months = fs.readdirSync(yearPath).filter(f =>
+            fs.statSync(path.join(yearPath, f)).isDirectory()
+        );
 
         if (months.length === 0) {
             return res.status(404).json({ error: 'No months found' });
         }
 
-        // Pick a random month
-        const monthIndex = Math.floor(Math.random() * months.length);
-        const month = months[monthIndex];
-
-        // Get all puzzle JSON files in the selected month
+        const month = months[Math.floor(Math.random() * months.length)];
         const monthPath = path.join(yearPath, month);
-        const dayFiles = fs.readdirSync(monthPath).filter(function (f) {
-            return f.endsWith('.json');
-        });
+        const dayFiles = fs.readdirSync(monthPath).filter(f => f.endsWith('.json'));
 
         if (dayFiles.length === 0) {
             return res.status(404).json({ error: 'No days found' });
         }
 
-        // Pick a random day file
-        const dayIndex = Math.floor(Math.random() * dayFiles.length);
-        const dayFile = dayFiles[dayIndex];
-
-        // Read and parse the puzzle JSON
+        const dayFile = dayFiles[Math.floor(Math.random() * dayFiles.length)];
         const filePath = path.join(monthPath, dayFile);
         const puzzle = JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
-        // Return the result
-        res.json(
-            {
-                year: year,
-                month: month,
-                day: dayFile.replace('.json', ''),
-                puzzle: puzzle
-            });
-    }
-    catch (err) {
+        res.json({
+            year,
+            month,
+            day: dayFile.replace('.json', ''),
+            puzzle
+        });
+    } catch (err) {
         console.error(err);
         res.status(500).json({ error: err.message });
     }
 });
 
+/* ------------------------------
+   Stripe Donation Endpoint
+-------------------------------- */
+// POST /api/donate
+app.post("/api/donate", express.json(), async (req, res) => {
+    try {
+        const { value } = req.body;
 
+        // validate amount
+        const amount = Math.round(parseFloat(value) * 100);
+        if (!amount || amount <= 0) {
+            return res.status(400).json({ error: "Invalid amount" });
+        }
 
-app.listen(process.env.PORT, () => console.log(`Server running on ${process.env.PORT}`));
+        // create checkout session
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ["card"], // includes Apple Pay / Google Pay
+            mode: "payment",
+            line_items: [
+                {
+                    price_data: {
+                        currency: "usd",
+                        product_data: {
+                            name: "Donation",
+                        },
+                        unit_amount: amount,
+                    },
+                    quantity: 1,
+                },
+            ],
+            success_url: "https://ragz-da-rascal.github.io/Archived-NYT-Crosswords/?success=true",
+            cancel_url: "https://ragz-da-rascal.github.io/Archived-NYT-Crosswords/?canceled=true",
+        });
+
+        res.json({ url: session.url });
+    } catch (err) {
+        console.error("Stripe error:", err);
+        res.status(500).json({ error: "Failed to create donation session" });
+    }
+});
+
+/* ------------------------------
+   Start Server
+-------------------------------- */
+app.listen(process.env.PORT || 5000, () => {
+    console.log(`Server running on port ${process.env.PORT || 5000}`);
+});

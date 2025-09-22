@@ -13,6 +13,33 @@
 
 <body>
     <div id="alert-box" class="hidden"></div>
+    <button id="donate-btn" title="Support the Project">🎁</button>
+
+    <!-- Modal overlay -->
+    <div id="donate-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Support Us</h2>
+            <p>Choose a donation amount:</p>
+            <div class="donation-options">
+                <button class="donate-option" data-amount="1">$1</button>
+                <button class="donate-option" data-amount="5">$5</button>
+                <button class="donate-option" data-amount="20">$20</button>
+                <input 
+                    id="custom-amount" 
+                    type="text" 
+                    placeholder="Custom Amount" 
+                    inputmode="decimal"
+                    pattern="^\d+(\.\d{1,2})?$" 
+                    title="Enter a valid amount (e.g. 1, 5, 20, 19.99)" />
+
+            </div>
+            <div class="actions">
+                <button id="confirm-donate">Donate</button>
+                <button id="close-modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <header>
             <nav>
@@ -25,9 +52,9 @@
                         }
                     </script>
                 </select>
-                <button id="generate-btn">Generate</button>
-                <button id="solve-btn">Solve</button>
-                <button id="check-btn" onclick="checkSolution()">Check</button>
+                <button id="generate-btn" title="Fetch a Random Puzzle">Generate</button>
+                <button id="solve-btn" title="Complete the Crossword">Solve</button>
+                <button id="check-btn" title="Check the Solution" onclick="checkSolution()">Check</button>
                 <button id="theme-toggle" title="Toggle Theme" onclick="toggleTheme()">☼</button>
                 <button id="install-btn" class="install">Install</button>
             </nav>
