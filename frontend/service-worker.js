@@ -18,6 +18,8 @@ self.addEventListener("install", event => {
             )
         )
     );
+
+    self.skipWaiting();
 });
 
 // Activate: clean up old caches
@@ -27,6 +29,8 @@ self.addEventListener("activate", event => {
             Promise.all(keys.map(k => k !== CACHE_NAME && caches.delete(k)))
         )
     );
+
+    self.clients.claim();
 });
 
 // Fetch: try cache, fall back to network
