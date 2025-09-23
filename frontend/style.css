@@ -8,6 +8,8 @@
     --text: oklch(0.96 0.1 20);
     --text-muted: oklch(0.76 0.1 20);
     --highlight: oklch(0.5 0.1 20);
+    --shadow: 0px 4px 4px #00000030,
+        0px 12px 12px #00000015;
     --border: oklch(0.4 0.1 20);
     --border-muted: oklch(0.3 0.1 20);
     --primary: oklch(0.76 0.1 20);
@@ -248,6 +250,33 @@ option:hover {
     border: 1px solid var(--border-muted);
     border-radius: 0.5rem;
     box-shadow: var(--shadow);
+}
+
+/* Title card styles */
+.title-card {
+    display: flex;
+    flex-flow: column nowrap;
+    background: var(--bg-light);
+    padding: 0.5rem 1rem;
+    margin: 1rem;
+    border-radius: 0.5rem 0.5rem 0 0;
+    border: 0.0625rem solid var(--border);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-0.625rem);
+    transition: all 0.3s ease;
+}
+
+.title-card.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.title-card div{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
 }
 
 .clue-bar {

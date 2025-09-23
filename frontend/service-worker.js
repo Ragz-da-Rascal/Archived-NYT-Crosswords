@@ -1,5 +1,5 @@
 // service-worker.js
-const CACHE_NAME = "nyt-crosswords-cache-v2";
+const CACHE_NAME = `nyt-crosswords-cache-${Date.now()}`;
 const ASSETS = [
     "./",
     "./index.html",

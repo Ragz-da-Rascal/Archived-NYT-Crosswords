@@ -13,6 +13,8 @@ const customAmount = document.getElementById('custom-amount');
 const installButton = document.getElementById('install-btn');
 
 let selectedAmount = null;
+let puzzleStartTime = null;
+let timerInterval = null;
 let currentRow = 0;
 let currentCol = 0;
 let currentDirection = 'across';
@@ -95,6 +97,18 @@ async function generateCrossword() {
 	const year = yearSelect.value;
 	if (!year) { showAlert('Select a year', "info"); return; }
 
+	puzzleStartTime = Date.now();
+
+
+	// clear any old timer
+	if (timerInterval) clearInterval(timerInterval);
+
+	// update every second
+	timerInterval = setInterval(() => {
+		const elapsedMs = Date.now() - puzzleStartTime;
+		document.getElementById("timer").textContent = "⏱ " + formatTime(elapsedMs);
+	}, 1000);
+
 	const button = document.getElementById("generate-btn");
 	button.textContent = "Loading...";
 
@@ -103,6 +117,7 @@ async function generateCrossword() {
 		if (!res.ok) throw new Error('Failed to fetch random puzzle');
 
 		const { puzzle } = await res.json();
+		renderTitleCard(puzzle);
 		renderCrossword(puzzle);
 		renderClues(puzzle);
 
@@ -115,6 +130,23 @@ async function generateCrossword() {
 	}
 
 	button.textContent = "Generate";
+}
+
+function renderTitleCard(puzzle) {
+	const card = document.getElementById("title-card");
+
+	card.classList.remove("hidden");
+
+	card.innerHTML = `
+		<div>
+			<h5>Author: ${puzzle.author}</h5>
+			<h5>Editor: ${puzzle.editor}</h5>
+		</div>
+		<p>${puzzle.dow}, ${puzzle.date}</p>
+    `;
+
+	// trigger the transition
+	requestAnimationFrame(() => card.classList.add("show"));
 }
 
 
@@ -411,6 +443,40 @@ function moveToNeighbor(dx, dy) {
 	}
 }
 
+function formatTime(ms) {
+	const totalSeconds = Math.floor(ms / 1000);
+	const hours = Math.floor(totalSeconds / 3600);
+	const minutes = Math.floor((totalSeconds % 3600) / 60);
+	const seconds = totalSeconds % 60;
+
+	return (
+		hours.toString().padStart(1, "0") + ":" +
+		minutes.toString().padStart(2, "0") + ":" +
+		seconds.toString().padStart(2, "0")
+	);
+}
+
+
+function onPuzzleSolved() {
+	if (!puzzleStartTime) return;
+
+	const elapsedMs = Date.now() - puzzleStartTime;
+
+	// Stop timer
+	clearInterval(timerInterval);
+	timerInterval = null;
+
+	// Format time as H:MM:SS
+	const formattedTime = formatTime(elapsedMs);
+
+	// Show success message
+	showAlert(`🎉 Puzzle solved in ${formattedTime}!`, "success");
+
+	// Reset puzzle timer
+	puzzleStartTime = null;
+}
+
+
 // ===== solution checking (per-letter vs the solution grid) =====
 function checkSolution() {
 	const { grid, size } = crosswordData;
@@ -426,7 +492,7 @@ function checkSolution() {
 			}
 		}
 	}
-	showAlert('Congratulations, you solved the crossword!', "success");
+	onPuzzleSolved();
 }
 
 function checkIfComplete() {
@@ -471,7 +537,7 @@ donateOptions.forEach(btn => {
 		document.querySelectorAll(".donate-option").forEach(btn => btn.classList.remove("selected"));
 		btn.classList.add("selected");
 
-		customInput.addEventListener("click", () => { 
+		customInput.addEventListener("click", () => {
 			btn.classList.remove("selected");
 			selectedAmount = null;
 		});
