@@ -600,7 +600,6 @@ window.addEventListener('beforeinstallprompt', e => {
 // event listener for the install button click
 installButton.addEventListener('click', () => {
 	if (window.deferredPrompt) {
-		// call the prompt method on the deferredPrompt object to display the install dialog
 		window.deferredPrompt.prompt();
 	}
 }
