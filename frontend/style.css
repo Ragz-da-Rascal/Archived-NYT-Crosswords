@@ -444,10 +444,14 @@ option:hover {
     border-radius: 12px;
     max-width: 300px;
     width: 90%;
-    text-align: center;
+    text-align: justify;
     box-shadow: var(--shadow);
     border: 1px solid var(--border);
     color: var(--text);
+}
+
+.modal-content a {
+    color: var(--secondary);
 }
 
 .donation-options {

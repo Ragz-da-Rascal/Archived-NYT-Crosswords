@@ -568,9 +568,6 @@ window.addEventListener("DOMContentLoaded", () => {
 	const disclaimerModal = document.getElementById("disclaimer-modal");
 	const acceptBtn = document.getElementById("accept-disclaimer");
 
-	// Show modal on load
-	disclaimerModal.classList.remove("hidden");
-
 	// Close modal on click
 	acceptBtn.addEventListener("click", () => {
 		disclaimerModal.classList.add("hidden");
