@@ -34,18 +34,19 @@ function addInputListeners(input, row, col) {
 	// Navigation keys
 	input.addEventListener('keydown', (e) => {
 		switch (e.key) {
-			case 'Backspace': {
+			case 'Backspace':
 				e.preventDefault();
+				
 				if (input.value) {
-					input.value = '';
+					input.value = ''; 
 				} else {
-					movePrevCell(row, col);
+					movePrevCell(row, col);  
 				}
 				break;
-			}
 			case 'Enter':
+			case 'Tab':
 				e.preventDefault();
-				moveNextCell(row, col);
+				toggleDirection();
 				break;
 			case 'ArrowLeft':
 				e.preventDefault();
