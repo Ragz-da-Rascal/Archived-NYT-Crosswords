@@ -103,12 +103,6 @@ async function generateCrossword() {
 	// clear any old timer
 	if (timerInterval) clearInterval(timerInterval);
 
-	// update every second
-	timerInterval = setInterval(() => {
-		const elapsedMs = Date.now() - puzzleStartTime;
-		document.getElementById("timer").textContent = "⏱ " + formatTime(elapsedMs);
-	}, 1000);
-
 	const button = document.getElementById("generate-btn");
 	button.textContent = "Loading...";
 
@@ -123,6 +117,12 @@ async function generateCrossword() {
 
 		const first = findFirstPlayableCell(puzzle);
 		if (first) setActiveCell(first.row, first.col, currentDirection);
+
+		// update every second
+		timerInterval = setInterval(() => {
+			const elapsedMs = Date.now() - puzzleStartTime;
+			document.getElementById("timer").textContent = "⏱ " + formatTime(elapsedMs);
+		}, 1000);
 
 	} catch (err) {
 		console.error(err);
