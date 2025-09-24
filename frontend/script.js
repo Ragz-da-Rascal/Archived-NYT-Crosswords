@@ -614,6 +614,10 @@ if ('serviceWorker' in navigator) {
 	});
 }
 
+navigator.serviceWorker.addEventListener('controllerchange', () => {
+	window.location.reload(true); // true = force reload without cache
+});
+
 window.addEventListener("DOMContentLoaded", () => {
 	const params = new URLSearchParams(window.location.search);
 	const status = params.get("status");
