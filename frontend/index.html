@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <link rel="icon" type="image/jpeg" href="./public/images/Logo.png">
     <title>NY Times | Crosswords</title>
     <link rel="manifest" href="manifest.json">
@@ -24,13 +27,8 @@
                 <button class="donate-option" data-amount="5">$5</button>
                 <button class="donate-option" data-amount="10">$10</button>
                 <button class="donate-option" data-amount="20">$20</button>
-                <input 
-                    id="custom-amount" 
-                    type="text" 
-                    placeholder="Custom Amount" 
-                    inputmode="decimal"
-                    pattern="^\d+(\.\d{1,2})?$" 
-                    title="Enter a valid amount (e.g. 1, 5, 20, 19.99)" />
+                <input id="custom-amount" type="text" placeholder="Custom Amount" inputmode="decimal"
+                    pattern="^\d+(\.\d{1,2})?$" title="Enter a valid amount (e.g. 1, 5, 20, 19.99)" />
 
             </div>
             <div class="actions">
@@ -48,7 +46,8 @@
                 All crossword puzzles provided are for personal use only. Any commercial use
                 or redistribution of the puzzles without proper authorization is prohibited.
                 The developer does not claim ownership of the content and is not responsible
-                for any copyright infringements. <a target="#" href="https://www.nytimes.com/crosswords">Visit NYT's website for the complete set</a>
+                for any copyright infringements. <a target="#" href="https://www.nytimes.com/crosswords">Visit NYT's
+                    website for the complete set</a>
             </p>
             <button id="accept-disclaimer">I Understand</button>
         </div>
