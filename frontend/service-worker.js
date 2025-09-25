@@ -31,16 +31,19 @@ self.addEventListener("activate", event => {
     self.clients.claim();
 });
 
-// Fetch: try cache, fall back to network
+// Fetch: network-first for all, cache fallback if offline
 self.addEventListener("fetch", event => {
     event.respondWith(
-        caches.match(event.request).then(resp =>
-            resp || fetch(event.request).catch(() => {
-                // Optional: fallback page if offline and not in cache
-                if (event.request.mode === "navigate") {
-                    return caches.match("./index.html");
-                }
+        fetch(event.request)
+            .then(response => {
+                // Optionally: put a copy in cache
+                const clone = response.clone();
+                caches.open(CACHE_NAME).then(cache => {
+                    cache.put(event.request, clone);
+                });
+                return response;
             })
-        )
+            .catch(() => caches.match(event.request)) // fallback if offline
     );
 });
+

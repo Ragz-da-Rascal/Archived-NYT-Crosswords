@@ -608,15 +608,11 @@ installButton.addEventListener('click', () => {
 
 if ('serviceWorker' in navigator) {
 	window.addEventListener('load', () => {
-		navigator.serviceWorker.register('./service-worker.js')
+		navigator.serviceWorker.register(`./service-worker.js?v=${Date.now()}`)
 			.then(reg => console.log('SW registered:', reg))
 			.catch(err => console.error('SW failed:', err));
 	});
 }
-
-navigator.serviceWorker.addEventListener('controllerchange', () => {
-	window.location.reload(true); // true = force reload without cache
-});
 
 window.addEventListener("DOMContentLoaded", () => {
 	const params = new URLSearchParams(window.location.search);
