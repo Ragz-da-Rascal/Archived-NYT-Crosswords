@@ -98,12 +98,6 @@ async function generateCrossword() {
 	const year = yearSelect.value;
 	if (!year) { showAlert('Select a year', "info"); return; }
 
-	puzzleStartTime = Date.now();
-
-
-	// clear any old timer
-	if (timerInterval) clearInterval(timerInterval);
-
 	const button = document.getElementById("generate-btn");
 	button.textContent = "Loading...";
 
@@ -119,16 +113,21 @@ async function generateCrossword() {
 		const first = findFirstPlayableCell(puzzle);
 		if (first) setActiveCell(first.row, first.col, currentDirection);
 
-		// update every second
-		timerInterval = setInterval(() => {
-			const elapsedMs = Date.now() - puzzleStartTime;
-			document.getElementById("timer").textContent = "⏱ " + formatTime(elapsedMs);
-		}, 1000);
-
 	} catch (err) {
 		console.error(err);
 		showAlert('Something went wrong fetching the puzzle. Try again.', "danger");
 	}
+	
+	puzzleStartTime = Date.now();
+
+	// clear any old timer
+	if (timerInterval) clearInterval(timerInterval);
+
+	// update every second
+	timerInterval = setInterval(() => {
+		const elapsedMs = Date.now() - puzzleStartTime;
+		document.getElementById("timer").textContent = "⏱ " + formatTime(elapsedMs);
+	}, 1000);
 
 	button.textContent = "Generate";
 }

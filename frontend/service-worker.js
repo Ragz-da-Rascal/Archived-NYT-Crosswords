@@ -31,6 +31,7 @@ self.addEventListener("activate", event => {
     self.clients.claim();
 });
 
+
 // Fetch: network-first for all, cache fallback if offline
 self.addEventListener("fetch", event => {
     event.respondWith(
