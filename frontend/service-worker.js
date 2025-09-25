@@ -3,8 +3,6 @@ const CACHE_NAME = `nyt-crosswords-cache-${Date.now()}`;
 const ASSETS = [
     "./",
     "./index.html",
-    "./style.css",
-    "./script.js",
     "./manifest.json",
     "./images/Logo.png"
 ];
