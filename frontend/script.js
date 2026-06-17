@@ -14,6 +14,9 @@ const customAmount = document.getElementById('custom-amount');
 const installButton = document.getElementById('install-btn');
 const themeToggle = document.getElementById('theme-toggle');
 const srAnnounce = document.getElementById('sr-announce');
+const revealModal = document.getElementById('reveal-modal');
+const confirmReveal = document.getElementById('confirm-reveal');
+const cancelReveal = document.getElementById('cancel-reveal');
 
 let selectedAmount = null;
 let puzzleStartTime = null;
@@ -162,9 +165,13 @@ function escapeHtml(str) {
 
 function solvePuzzle() {
     if (!crosswordData) return;
-    var confirmed = confirm('Reveal all answers? This cannot be undone.');
-    if (!confirmed) return;
+    revealModal.classList.remove('hidden');
+    confirmReveal.focus();
+}
 
+confirmReveal.addEventListener('click', function () {
+    revealModal.classList.add('hidden');
+    if (!crosswordData) return;
     var grid = crosswordData.grid;
     var size = crosswordData.size;
     for (var i = 0; i < size.rows; i++) {
@@ -176,7 +183,23 @@ function solvePuzzle() {
         }
     }
     announce('Puzzle answers revealed');
-}
+});
+
+cancelReveal.addEventListener('click', function () {
+    revealModal.classList.add('hidden');
+});
+
+revealModal.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+        revealModal.classList.add('hidden');
+    }
+});
+
+revealModal.addEventListener('click', function (e) {
+    if (e.target === revealModal) {
+        revealModal.classList.add('hidden');
+    }
+});
 
 function showAlert(message, type) {
     var alertBox = document.getElementById('alert-box');

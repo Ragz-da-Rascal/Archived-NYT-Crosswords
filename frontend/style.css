@@ -15,7 +15,9 @@
     --color-text-subtle: oklch(0.56 0.08 20);
     --color-border: oklch(0.4 0.1 20);
     --color-border-muted: oklch(0.3 0.08 20);
-    --color-grid-cell: oklch(0.96 0.08 20);
+    --color-grid-cell: oklch(0.76 0.1 20);
+    --color-grid-input: oklch(0.96 0.1 20);
+    --color-grid-text: oklch(0.2 0.05 20);
     --color-grid-cell-active: oklch(0.76 0.1 20);
     --color-grid-block: oklch(0.1 0.05 20);
     --color-success: oklch(0.7 0.1 160);
@@ -79,6 +81,8 @@
     --color-border: oklch(0.6 0.08 20);
     --color-border-muted: oklch(0.7 0.06 20);
     --color-grid-cell: oklch(1 0.02 20);
+    --color-grid-input: oklch(1 0.02 20);
+    --color-grid-text: oklch(0.15 0.08 20);
     --color-grid-cell-active: oklch(0.85 0.08 20);
     --color-grid-block: oklch(0.2 0.05 20);
     --color-success: oklch(0.5 0.1 160);
@@ -509,7 +513,7 @@ body {
 .crossword-cell {
     flex: 1;
     aspect-ratio: 1 / 1;
-    border: 0.5px solid var(--color-border);
+    border: 1px solid var(--color-border);
     background-color: var(--color-grid-cell);
     display: flex;
     justify-content: center;
@@ -523,8 +527,8 @@ body {
     font-size: clamp(0.7rem, 2.2vw, 1.4rem);
     text-align: center;
     border: none;
-    background-color: var(--color-surface);
-    color: var(--color-text);
+    background-color: var(--color-grid-input);
+    color: var(--color-grid-text);
     font-family: var(--font-body);
     font-weight: 600;
     cursor: pointer;
@@ -562,7 +566,7 @@ body {
     position: absolute;
     top: 1px;
     left: 2px;
-    color: var(--color-text-subtle);
+    color: var(--color-grid-text);
     font-family: var(--font-ui);
     font-weight: 700;
     font-size: clamp(0.35rem, 1vw, 0.65rem);
