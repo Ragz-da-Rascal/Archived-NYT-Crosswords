@@ -87,11 +87,11 @@
         <main class="crossword">
             <div id="title-card" class="title-card hidden"></div>
             <div id="active-clue" class="clue-bar" aria-live="polite" aria-atomic="true" aria-label="Current clue"></div>
-            <div id="puzzle-container" class="puzzle"></div>
-
-            <section class="clue-section" aria-label="Crossword clues">
-                <h2 class="clue-section-heading">Clues</h2>
-                <div class="clues" id="clues-container">
+            <div class="puzzle-layout">
+                <div id="puzzle-container" class="puzzle"></div>
+                <section class="clue-section" aria-label="Crossword clues">
+                    <h2 class="clue-section-heading">Clues</h2>
+                    <div class="clues" id="clues-container">
                     <div class="across">
                         <h3 class="clue-group-heading">Across</h3>
                     </div>
@@ -100,6 +100,7 @@
                     </div>
                 </div>
             </section>
+            </div>
         </main>
 
         <footer class="app-footer">

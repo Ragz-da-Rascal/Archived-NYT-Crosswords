@@ -267,6 +267,18 @@ function renderCrossword(data) {
             }
         }
     }
+    syncClueSectionHeight();
+}
+
+function syncClueSectionHeight() {
+    var puzzle = document.querySelector('.puzzle');
+    var clueSection = document.querySelector('.clue-section');
+    if (!puzzle || !clueSection) return;
+    if (window.innerWidth > 768) {
+        clueSection.style.height = puzzle.offsetHeight + 'px';
+    } else {
+        clueSection.style.height = '';
+    }
 }
 
 function findClueCell(gridnum, data) {
@@ -629,6 +641,10 @@ installButton.addEventListener('click', function () {
     }
 });
 
+window.addEventListener('resize', function () {
+    if (crosswordData) syncClueSectionHeight();
+});
+
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function () {
         navigator.serviceWorker.register('./service-worker.js?v=' + Date.now())
@@ -650,6 +666,9 @@ window.addEventListener('DOMContentLoaded', function () {
     if (status) {
         window.history.replaceState({}, document.title, window.location.pathname);
     }
+
+    syncClueSectionHeight();
+    requestAnimationFrame(function () { syncClueSectionHeight(); });
 });
 
 window.addEventListener('DOMContentLoaded', function () {

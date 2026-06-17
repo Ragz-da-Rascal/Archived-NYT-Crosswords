@@ -132,7 +132,7 @@ body {
     width: clamp(20rem, 92dvw, 52rem);
     min-height: fit-content;
     margin: 0 auto;
-    padding: var(--space-5) var(--space-6);
+    padding: var(--space-5) var(--space-6) var(--space-7);
     background-color: var(--color-surface);
     border: 1px solid var(--color-border-muted);
     border-radius: var(--radius-xl);
@@ -477,9 +477,19 @@ body {
     font-weight: 400;
 }
 
+.puzzle-layout {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--space-5);
+    width: 100%;
+    padding-bottom: var(--space-5);
+}
+
 .puzzle {
     display: flex;
     flex-direction: column;
+    flex: 0 1 auto;
     width: 100%;
     max-width: 32rem;
     aspect-ratio: 1 / 1;
@@ -487,7 +497,7 @@ body {
     border-radius: var(--radius-md);
     background-color: var(--color-text);
     box-shadow: var(--shadow-md);
-    margin: 0 auto var(--space-5);
+    margin: 0;
     overflow: hidden;
 }
 
@@ -562,14 +572,15 @@ body {
 }
 
 .clue-section {
-    width: 100%;
-    max-width: 32rem;
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
     background-color: var(--color-surface-raised);
     border: 1px solid var(--color-border-muted);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
     padding: var(--space-4);
-    margin-bottom: var(--space-4);
 }
 
 .clue-section-heading {
@@ -581,18 +592,30 @@ body {
     text-align: center;
     letter-spacing: 0.04em;
     text-transform: uppercase;
+    flex-shrink: 0;
 }
 
 .clues {
     display: flex;
-    flex-flow: row nowrap;
+    flex-direction: column;
     gap: var(--space-4);
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
 }
 
-.across,
-.down {
+.across {
+    display: flex;
+    flex-direction: column;
     flex: 1;
-    min-width: 0;
+    min-height: 0;
+}
+
+.down {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
 }
 
 .clue-group-heading {
@@ -605,13 +628,15 @@ body {
     text-transform: uppercase;
     padding-bottom: var(--space-1);
     border-bottom: 2px solid var(--color-border-muted);
+    flex-shrink: 0;
 }
 
 .clues ul {
     list-style: none;
     padding: 0;
     margin: 0;
-    max-height: 18rem;
+    min-height: 0;
+    flex: 1;
     overflow-y: auto;
 }
 
@@ -871,23 +896,42 @@ body {
         font-size: var(--font-size-xs);
     }
 
-    .clues {
+    .puzzle-layout {
         flex-direction: column;
+        align-items: center;
     }
 
-    .across,
-    .down {
+    .puzzle {
+        margin-bottom: var(--space-5);
+    }
+
+    .clue-section {
         width: 100%;
+        max-width: 32rem;
+    }
+
+    .clues {
+        overflow-y: visible;
+        flex: none;
+    }
+
+    .across {
+        flex: none;
+    }
+
+    .down {
+        flex: none;
     }
 
     .clues ul {
         max-height: 12rem;
+        flex: none;
     }
 }
 
 @media (max-width: 480px) {
     .container {
-        padding: var(--space-3) var(--space-2);
+        padding: var(--space-3) var(--space-2) var(--space-6);
     }
 
     .app-title {
