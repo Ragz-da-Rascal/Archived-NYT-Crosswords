@@ -1,6 +1,7 @@
 // backend/server.js
 const express = require("express");
-const fs = require("fs");
+const fs = require("node:fs");
+const fsPromises = require("node:fs/promises");
 const path = require("path");
 const cors = require("cors");
 const Stripe = require("stripe");
@@ -33,44 +34,103 @@ app.use(cors({
 /* ------------------------------
    Crossword Endpoint 
 -------------------------------- */
-app.get('/api/crosswords/:year/random', (req, res) => {
-    try {
-        const year = req.params.year;
-        const yearPath = path.join(__dirname, 'nyt_crosswords', year);
 
-        if (!fs.existsSync(yearPath)) {
-            return res.status(404).json({ error: 'Year not found' });
+app.get("/api/crosswords/:year/random", async (request, response) => {
+    try {
+        const requestedYear = request.params.year;
+
+        if (!/^\d{4}$/.test(requestedYear)) {
+            return response.status(400).json({
+                error: "Year must be a four-digit number",
+            });
         }
 
-        const months = fs.readdirSync(yearPath).filter(f =>
-            fs.statSync(path.join(yearPath, f)).isDirectory()
+        const requestedYearFolderPath = path.join(
+            __dirname,
+            "nyt_crosswords",
+            requestedYear
         );
 
-        if (months.length === 0) {
-            return res.status(404).json({ error: 'No months found' });
+        let monthFolderEntries;
+
+        try {
+            monthFolderEntries = await fsPromises.readdir(
+                requestedYearFolderPath,
+                {
+                    withFileTypes: true,
+                }
+            );
+        } catch (error) {
+            if (error.code === "ENOENT") {
+                return response.status(404).json({
+                    error: `No crossword data was found for ${requestedYear}`,
+                });
+            }
+
+            throw error;
         }
 
-        const month = months[Math.floor(Math.random() * months.length)];
-        const monthPath = path.join(yearPath, month);
-        const dayFiles = fs.readdirSync(monthPath).filter(f => f.endsWith('.json'));
+        const monthFolders = monthFolderEntries.filter((entry) =>
+            entry.isDirectory()
+        );
 
-        if (dayFiles.length === 0) {
-            return res.status(404).json({ error: 'No days found' });
+        const availablePuzzleFiles = [];
+
+        for (const monthFolder of monthFolders) {
+            const monthFolderPath = path.join(
+                requestedYearFolderPath,
+                monthFolder.name
+            );
+
+            const monthFolderContents = await fsPromises.readdir(monthFolderPath, {
+                withFileTypes: true,
+            });
+
+            const puzzleFilesInMonth = monthFolderContents.filter((entry) => {
+                return entry.isFile() && entry.name.endsWith(".json");
+            });
+
+            for (const puzzleFile of puzzleFilesInMonth) {
+                availablePuzzleFiles.push({
+                    month: monthFolder.name,
+                    day: path.basename(puzzleFile.name, ".json"),
+                    filePath: path.join(monthFolderPath, puzzleFile.name),
+                });
+            }
         }
 
-        const dayFile = dayFiles[Math.floor(Math.random() * dayFiles.length)];
-        const filePath = path.join(monthPath, dayFile);
-        const puzzle = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        if (availablePuzzleFiles.length === 0) {
+            return response.status(404).json({
+                error: `No crossword puzzles were found for ${requestedYear}`,
+            });
+        }
 
-        res.json({
-            year,
-            month,
-            day: dayFile.replace('.json', ''),
-            puzzle
+        const randomPuzzleIndex = Math.floor(
+            Math.random() * availablePuzzleFiles.length
+        );
+
+        const selectedPuzzleFile =
+            availablePuzzleFiles[randomPuzzleIndex];
+
+        const selectedPuzzleFileContents = await fsPromises.readFile(
+            selectedPuzzleFile.filePath,
+            "utf8"
+        );
+
+        const selectedPuzzle = JSON.parse(selectedPuzzleFileContents);
+
+        return response.json({
+            year: requestedYear,
+            month: selectedPuzzleFile.month,
+            day: selectedPuzzleFile.day,
+            puzzle: selectedPuzzle,
         });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: err.message });
+    } catch (error) {
+        console.error("Failed to select random crossword:", error);
+
+        return response.status(500).json({
+            error: "Failed to load a random crossword puzzle",
+        });
     }
 });
 
