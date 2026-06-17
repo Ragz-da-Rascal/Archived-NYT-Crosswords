@@ -5,40 +5,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/jpeg" href="./public/images/Logo.png">
-    <title>NY Times | Crosswords</title>
+    <title>Archived Crossword Explorer</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css?v=%HASH%">
     <script src="script.js?v=%HASH%" defer></script>
 </head>
 
 <body>
-    <div id="alert-box" class="hidden"></div>
-    <button id="donate-btn" title="Support the Project">🎁</button>
+    <div id="alert-box" class="hidden" role="alert" aria-live="assertive" aria-atomic="true"></div>
 
-    <!-- Modal overlay -->
-    <div id="donate-modal" class="modal hidden">
+    <div id="sr-announce" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+    <button id="donate-btn" class="btn btn-icon" aria-label="Support the project with a donation" title="Support the project">🎁</button>
+
+    <div id="donate-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="donate-heading">
         <div class="modal-content">
-            <h2>Support Us</h2>
+            <h2 id="donate-heading">Support Us</h2>
             <p>Choose a donation amount:</p>
             <div class="donation-options">
-                <button class="donate-option" data-amount="5">$5</button>
-                <button class="donate-option" data-amount="10">$10</button>
-                <button class="donate-option" data-amount="20">$20</button>
+                <button class="donate-option btn" data-amount="5">$5</button>
+                <button class="donate-option btn" data-amount="10">$10</button>
+                <button class="donate-option btn" data-amount="20">$20</button>
                 <input id="custom-amount" type="text" placeholder="Custom Amount" inputmode="decimal"
                     pattern="^\d+(\.\d{1,2})?$" title="Enter a valid amount (e.g. 1, 5, 20, 19.99)" />
-
             </div>
             <div class="actions">
-                <button id="confirm-donate">Donate</button>
-                <button id="close-modal">Cancel</button>
+                <button id="confirm-donate" class="btn btn-primary">Donate</button>
+                <button id="close-modal" class="btn">Cancel</button>
             </div>
         </div>
     </div>
 
-    <!-- Disclaimer Modal -->
-    <div id="disclaimer-modal" class="modal">
+    <div id="disclaimer-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="disclaimer-heading">
         <div class="modal-content">
-            <h2>Disclaimer</h2>
+            <h2 id="disclaimer-heading">Disclaimer</h2>
             <p>
                 All crossword puzzles provided are for personal use only. Any commercial use
                 or redistribution of the puzzles without proper authorization is prohibited.
@@ -46,55 +46,66 @@
                 for any copyright infringements. <a target="#" href="https://www.nytimes.com/crosswords">Visit NYT's
                     website for the complete set</a>
             </p>
-            <button id="accept-disclaimer">I Understand</button>
+            <button id="accept-disclaimer" class="btn btn-primary">I Understand</button>
         </div>
     </div>
 
-
-
     <div class="container">
-        <header>
-            <nav>
-                <select id="year-select">
-                    <option value="">Select a year</option>
-                    <!-- Generate options for each year from 1976 to 2018 -->
-                    <script>
-                        for (let i = 1976; i <= 2018; i++) {
-                            document.write(`<option value="${i}">${i}</option>`);
-                        }
-                    </script>
-                </select>
-                <button id="generate-btn" title="Fetch a Random Puzzle">Generate</button>
-                <button id="solve-btn" title="Complete the Crossword">Solve</button>
-                <button id="check-btn" title="Check the Solution" onclick="checkSolution()">Check</button>
-                <button id="theme-toggle" title="Toggle Theme" onclick="toggleTheme()">☼</button>
-                <button id="install-btn" class="install">Install</button>
-            </nav>
-            <h1>NY Times Crosswords</h1>
-            <p>A Time Capsule of Contemplation</p>
-            <h4 id="timer">⏱ 0:00:00</h4>
+        <header class="app-header">
+            <div class="toolbar" role="toolbar" aria-label="Crossword controls">
+                <div class="toolbar-row toolbar-row-top">
+                    <div class="year-control">
+                        <label for="year-select" class="sr-only">Select puzzle year</label>
+                        <select id="year-select" aria-label="Select a year">
+                            <option value="">Select a year</option>
+                            <script>
+                                for (let i = 1976; i <= 2018; i++) {
+                                    document.write('<option value="' + i + '">' + i + '</option>');
+                                }
+                            </script>
+                        </select>
+                    </div>
+                    <button id="generate-btn" class="btn btn-primary">Load Random Puzzle</button>
+                </div>
+                <div class="toolbar-row toolbar-row-bottom">
+                    <button id="check-btn" class="btn btn-secondary">Check Answers</button>
+                    <button id="solve-btn" class="btn btn-danger">Reveal Puzzle</button>
+                    <button id="theme-toggle" class="btn btn-icon" aria-label="Toggle color theme"
+                        title="Switch between dark and light appearance">☼</button>
+                    <button id="install-btn" class="btn btn-ghost">Install App</button>
+                </div>
+            </div>
+
+            <div class="branding">
+                <h1 class="app-title">Archived Crossword Explorer</h1>
+                <p class="app-subtitle">A Time Capsule of Crossword History</p>
+            </div>
+
+            <div id="timer" class="timer" role="timer" aria-live="off" aria-label="Elapsed puzzle time">⏱ 0:00:00</div>
         </header>
 
-        <div class="crossword">
+        <main class="crossword">
             <div id="title-card" class="title-card hidden"></div>
-            <div id="active-clue" class="clue-bar"></div>
+            <div id="active-clue" class="clue-bar" aria-live="polite" aria-atomic="true" aria-label="Current clue"></div>
             <div id="puzzle-container" class="puzzle"></div>
 
-            <section class="helper">
-                <h2>Clues</h2>
+            <section class="clue-section" aria-label="Crossword clues">
+                <h2 class="clue-section-heading">Clues</h2>
                 <div class="clues" id="clues-container">
                     <div class="across">
-                        <h2>Across</h2>
+                        <h3 class="clue-group-heading">Across</h3>
                     </div>
                     <div class="down">
-                        <h2>Down</h2>
+                        <h3 class="clue-group-heading">Down</h3>
                     </div>
                 </div>
             </section>
-        </div>
+        </main>
+
+        <footer class="app-footer">
+            <p class="disclaimer">An independently developed crossword archive interface. Not affiliated with or endorsed by The New York Times.</p>
+        </footer>
     </div>
 </body>
-
-<footer></footer>
 
 </html>
